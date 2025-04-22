@@ -124,3 +124,80 @@ if (!token) {
     }
   };
 }
+document.getElementById("login-btn")?.addEventListener("click", () => {
+  const clientId = "55f5219aba8a4195b35e5ccb02cf6199"; // your actual client ID
+  const redirectUri = "https://ft-hub-v2-420.netlify.app/callback.html";
+  const scope = "user-read-private user-read-email streaming";
+  const codeVerifier = generateCodeVerifier(128);
+
+  generateCodeChallenge(codeVerifier).then(codeChallenge => {
+    localStorage.setItem("code_verifier", codeVerifier);
+    const authUrl = `https://accounts.spotify.com/authorize` +
+      `?response_type=code` +
+      `&client_id=${clientId}` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&code_challenge_method=S256` +
+      `&code_challenge=${codeChallenge}`;
+
+    window.location.href = authUrl;
+  });
+});
+function generateCodeVerifier(length) {
+  const array = new Uint32Array(length);
+  window.crypto.getRandomValues(array);
+  return Array.from(array, dec => ('0' + (dec % 256).toString(16)).slice(-2)).join('');
+}
+
+async function generateCodeChallenge(codeVerifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("login-btn");
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      const clientId = "55f5219aba8a4195b35e5ccb02cf6199";
+      const redirectUri = "https://ft-hub-v2-420.netlify.app/callback.html";
+      const scope = "user-read-private user-read-email streaming";
+      const codeVerifier = generateCodeVerifier(128);
+
+      generateCodeChallenge(codeVerifier).then(codeChallenge => {
+        localStorage.setItem("code_verifier", codeVerifier);
+
+        const authUrl = `https://accounts.spotify.com/authorize` +
+          `?response_type=code` +
+          `&client_id=${clientId}` +
+          `&scope=${encodeURIComponent(scope)}` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&code_challenge_method=S256` +
+          `&code_challenge=${codeChallenge}`;
+
+        window.location.href = authUrl;
+      });
+    });
+  }
+});
+
+// helpers
+function generateCodeVerifier(length) {
+  const array = new Uint8Array(length);
+  window.crypto.getRandomValues(array);
+  return Array.from(array, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function generateCodeChallenge(verifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  return window.crypto.subtle.digest('SHA-256', data).then(digest => {
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  });
+}

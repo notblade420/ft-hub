@@ -8,7 +8,7 @@
   <script>
     const code = new URLSearchParams(window.location.search).get("code");
     const codeVerifier = localStorage.getItem("code_verifier");
-    const redirectUri = "http://127.0.0.1:5500/callback.html";
+    const redirectUri = "https://ft-hub-v2-420.netlify.app/callback.html";
     const status = document.getElementById("status");
 
     if (!code || !codeVerifier) {

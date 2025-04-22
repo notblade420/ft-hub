@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FourTwenty Music Lounge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+</head>
+<body>
+  <nav>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="music.html" class="active">🎵 Music</a></li>
+      <li><a href="profiles.html">Profiles</a></li>
+      <li><a href="map.html">Nearby</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2>🎧 FourTwenty Music Lounge</h2>
+    <div id="music-status">Connecting to Spotify...</div>
+    
+    <div id="now-playing"></div>
+    <div id="progress-bar"><div id="progress"></div></div>
+    <div id="time-info">
+        <span id="current-time">0:00</span> / <span id="total-duration">0:00</span>
+    </div>
+      
+
+    <div id="player-controls" style="display:none; margin-top:2rem;">
+      <button id="prev">⏮️</button>
+      <button id="play">▶️</button>
+      <button id="pause">⏸</button>
+      <button id="next">⏭️</button>
+      <input type="range" id="volume" min="0" max="100" value="50" />
+    </div>
+
+    <div style="margin-top: 3rem;">
+      <input id="search-box" type="text" placeholder="Search Spotify..." style="padding:0.5rem; width:70%;" />
+      <button id="search-btn">Search</button>
+    </div>
+
+    <div id="search-results" style="margin-top:2rem;"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Spotify Callback</title></head>
+<body style="background:#111;color:#e0ffe0;font-family:sans-serif;text-align:center;padding:4rem;">
+  <h2>Handling Spotify Login...</h2>
+  <p id="status">Just a moment...</p>
+  <script>
+    const code = new URLSearchParams(window.location.search).get("code");
+    const codeVerifier = localStorage.getItem("code_verifier");
+    const redirectUri = "http://127.0.0.1:5500/callback.html";
+    const status = document.getElementById("status");
+
+    if (!code || !codeVerifier) {
+      status.textContent = "Authorization failed. Missing code or verifier.";
+      console.error("Missing code or verifier");
+    } else {
+      status.textContent = "Contacting token server...";
+
+      fetch("http://localhost:4000/api/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: code,
+          code_verifier: codeVerifier,
+          redirect_uri: redirectUri
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Token response:", data);
+        if (data.access_token) {
+          localStorage.setItem("spotify_token", data.access_token);
+          status.textContent = "Login successful. Redirecting to music player...";
+          setTimeout(() => window.location.href = "music.html", 1500);
+        } else {
+          status.textContent = "Token exchange failed.";
+          console.error(data);
+        }
+      })
+      .catch(error => {
+        status.textContent = "Error contacting token server.";
+        console.error(error);
+      });
+    }
+  </script>
+</body>
+</html>
